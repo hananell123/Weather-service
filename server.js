@@ -28,8 +28,6 @@ app.get('/',function (req, res) {
      else if(data){
         console.log("getAllWeather callback")
         result["site1"] = data;
-        console.log(result);
-        console.log(Object.keys(result).length);
         if(Object.keys(result).length==api_counter){
           res.status(200).send(result);
         }

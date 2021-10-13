@@ -26,44 +26,20 @@ function get_data_from_user(temp,hum,wind,exep){
 
 }
 
-
-
-
-
-    async function helper(){
-
-
-
-
-    }
-async function test2(){
-    // const openWe = await fetch('http://localhost:3000/data', {   
-    //     method: 'GET'
-    //     }).then((response)=>{
-    //         response.text().then((text)=>{
-    //         console.log(text);
-    //        // document.getElementById("yosef").innerHTML = text;
-    //     })
-    // }).catch(err=>{console.log("Unsuccses",err)})
-
-    console.log("----------------------------------------------------------------------")
-
-    const ims = await fetch('http://localhost:3000/data', {   
+function show_whether_data(data){
+    console.log(data);
+    document.getElementById("yosef").innerHTML = data;
+}
+function get_whether(){
+    fetch('http://localhost:3001/data', {   
         method: 'GET'
         }).then((response)=>{
             response.json().then((text)=>{
-            document.getElementById("yosef").innerHTML = text;
-            // document.getElementById("yosef1").innerHTML = ims[1];
-
+            show_whether_data(text);
         })
     }).catch(err=>{console.log("Unsuccses",err)})
 
-        
-
-
-
-
-        // .then(data=>data.text()).then(text=> console.log(text))
+    // .then(data=>data.text()).then(text=> console.log(text))
     // fetch('http://localhost:3000/data', {
     //     method: 'GET',  
     //     })
