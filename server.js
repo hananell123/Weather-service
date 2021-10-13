@@ -19,16 +19,18 @@ app.get('/',function (req, res) {
   weather.setAPPID('d23fd3eefd5786c02c6b52afef8a5793')
 
   const result = {} 
+  let api_counter = 2;
   weather.getAllWeather((err,data)=>{
     if(err){
         console.log("getAllWeather callback error",err);
+        api_counter--;
      }
      else if(data){
         console.log("getAllWeather callback")
         result["site1"] = data;
         console.log(result);
         console.log(Object.keys(result).length);
-        if(Object.keys(result).length==2){
+        if(Object.keys(result).length==api_counter){
           res.status(200).send(result);
         }
      }
@@ -44,10 +46,13 @@ app.get('/',function (req, res) {
       }
     }
     function callback(error, response, body) {
-        if (!error && response.statusCode == 200) {
+        if(error || response.statusCode !== 200){
+          api_counter--;
+        }
+        else{
           console.log("in callback2");
           result["site2"] = body.data[0].channels
-          if(Object.keys(result).length==2){
+          if(Object.keys(result).length==api_counter){
             res.status(200).send(result);
           }
         }
