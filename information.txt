@@ -1,0 +1,7 @@
+open weather:
+username: hananell
+pass: hananel123
+
+https://www.weatherlink.com/bulletin
+username: hananell
+pass: hananel123

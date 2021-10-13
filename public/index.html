@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1 id="test">בדיקה</h1>
+    <form id="myForm" class="myForm"> 
+        
+        <label class="lab" for="temp">טמפרטורה
+            <input type="checkbox" id="temp" name="temp" >
+            <span class="checkmark"></span>
+        </label>
+        <label  class="lab" for="humidity">לחות
+            <input type="checkbox" id="humidity" name="humidity">
+            <span class="checkmark"></span>
+        </label>
+        <label  class="lab" for="wind">רוח
+            <input type="checkbox" id="wind" name="wind">
+            <span class="checkmark"></span>
+        </label>
+        <label for="deviation">אחוז סטיה לחריגה</label><br>
+        <input type="number" id="deviation" name="deviation" value="1" step="0.1" style="width: 1cm;"> <i>%</i><br>
+       <input type="submit" class="mySub" value="שלח בקשה" onclick="test2()"></button>
+       <p id="yosef"></p>
+       <p id="yosef1"></p>
+
+    </form>
+
+
+    <table id = "myTable" style="display: none;">
+        <tr>
+            <th></th>
+            <th>OpenWeather</th>
+            <th>ims</th>
+            <th>WeatherLink</th>
+        </tr>
+        
+           
+      
+
+
+
+    </table>
+    
+    <script src="index.js"></script>
+   
+</body>
+</html>

@@ -1,0 +1,116 @@
+input[type=checkbox], select {
+    width: 20%;
+    padding: 12px 0px;
+    margin: 0px 0px;
+    display: inline-block;
+    border: 20 solid rgb(140, 140, 140);
+    border-radius: 0px;
+    box-sizing: border-box;
+  }
+
+.tenor-gif-embed{
+    padding: 10px;
+    display:none;
+    width: 80%;
+    margin: 0px 10px;
+    display: inline-block;
+
+
+}
+
+.mySub {
+    
+    background-color: #748374; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 27px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+  }
+
+  .mySub:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+  }
+label{
+  color: rgb(0, 0, 0);
+  padding: 0px;
+  font-family: Arial;
+}
+
+.lab {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 30px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  .lab input {
+    position: absolute;
+    opacity: 100%;
+    cursor: pointer;
+    height: 0px;
+    width: 0px;
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+  }
+
+  /* On mouse-over, add a grey background color */
+.lab:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+  
+  /* When the checkbox is checked, add a blue background */
+  .lab input:checked ~ .checkmark {
+    background-color: #2196F3;
+  }
+  
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the checkmark when checked */
+  .lab input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  /* Style the checkmark/indicator */
+  .lab .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+
+
+.myForm{
+    width:100px;
+    margin:100px auto;
+
+  }
