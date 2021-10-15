@@ -108,9 +108,14 @@ label{
     transform: rotate(45deg);
   }
 
-
 .myForm{
     width:100px;
     margin:100px auto;
+
+  }
+  table,td{
+    border: 10px solid rgb(0, 0, 0);
+
+
 
   }

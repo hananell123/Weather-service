@@ -27,9 +27,10 @@ app.get('/',function (req, res) {
      }
      else if(data){
         console.log("getAllWeather callback")
-        result["site1"] = data;
+        result["openWeather"] = data;
         if(Object.keys(result).length==api_counter){
           res.status(200).send(result);
+          console.log(result["openWeather"]["main"].temp)
         }
      }
     })
@@ -45,13 +46,19 @@ app.get('/',function (req, res) {
     }
     function callback(error, response, body) {
         if(error || response.statusCode !== 200){
-          api_counter--;
+          
+          result["ims"] = error
+          if(Object.keys(result).length==api_counter){
+            res.status(200).send(result);
+           
+          }
         }
         else{
           console.log("in callback2");
-          result["site2"] = body.data[0].channels
+          result["ims"] = body.data[0].channels
           if(Object.keys(result).length==api_counter){
             res.status(200).send(result);
+            console.log(result["ims"])
           }
         }
 

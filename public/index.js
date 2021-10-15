@@ -26,9 +26,117 @@ function get_data_from_user(temp,hum,wind,exep){
 
 }
 
+
+function lazar(){
+    // let x = document.getElementById("myForm");
+    // console.log(x.deviation.value);
+    // console.log(x.wind.checked);
+}
+
+function calculate_pres(){
+
+}
+
+function get_wind(data){
+    // let wind = document.createElement("tr")
+    // let wind1 = document.createElement("td")
+    // wind1.innerText = "Wind"
+    // wind.appendChild(wind1)
+    let wind = {}
+
+    if(data["ims"]){
+        wind["ims"] = data["ims"] 
+        
+
+    }
+    else{
+        console.log("error ims",data["ims"]);
+    }
+    
+
+}
+
+function get_temperatur(){
+
+}
+
+function get_humidity(){
+
+}
+
+function get_ims_data(data){
+    let ims = {}
+    data["ims"].forEach(element =>{
+        if(element.name==="TD"){
+            ims["temperature"] = element.value
+        }
+        else if(element.name==="WS"){
+           ims["wind speed"] =  element.value    
+        }
+        else if(element.name==="WD"){
+            ims["wind direction"] = element.value
+
+        }
+        else if(element.name==="RH"){
+            ims["humidity"] = element.value
+
+        }
+        
+    })
+    return ims;
+}
+
+function get_openWeather_data(data){
+    let openWeather = {}
+    openWeather["wind speed"] = data["openWeather"]["wind"].speed
+    openWeather["wind direction"] = data["openWeather"]["deg"].deg
+
+    openWeather["humidity"] = data["openWeather"]["main"].humidity
+    openWeather["temperatur"] = data["openWeather"]["main"].temp
+
+    return openWeather;
+
+
+}
+
 function show_whether_data(data){
-    console.log(data);
-    document.getElementById("yosef").innerHTML = data;
+    let myForm = document.getElementById("myForm");
+    let myTable = document.createElement("table");
+    myTable.setAttribute("id", "myTable");
+
+    let headline = document.createElement("tr")
+    let td = document.createElement("td")
+    headline.appendChild(td)
+    Object.keys(data).forEach(function(k){
+        td = document.createElement("td")
+        td.innerText = k
+        headline.appendChild(td)
+        console.log(k);
+    });
+    td = document.createElement("td")
+    td.innerText = "חריגה"
+    headline.appendChild(td)
+    myTable.appendChild(headline)
+    document.body.appendChild(myTable)
+
+    if(myForm.wind.checked){
+        let wind = get_wind(data)
+
+    }
+    if(myForm.humidity.checked){
+
+    }
+    if(myForm.temp.checked){
+        
+    }
+    
+    
+    
+   
+   
+    
+    
+
 }
 function get_whether(){
     fetch('http://localhost:3001/data', {   
