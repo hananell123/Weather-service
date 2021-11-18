@@ -1,144 +1,229 @@
 
-function get_data_from_user(temp,hum,wind,exep){
-    var weatherObj = {}
-    var counter = 0;
-    if(hum.checked){
-        counter++
-
-    }
-    if(temp.checked){
-        counter++
-    }
-    if(wind.checked){
-        counter++
-    }
-    if(counter==0){
-        alert("לא נבחר מידע להצגה")  
-    }
-    else{
-
-
-
-        get_data_from_weather_sites(weatherObj)
-        //creat_result_table(weatherObj,hum.checked,temp.checked,wind.checked,exep)
-
-    }
-
+function close(){
+    console.log("close!!!!!");
+    document.getElementById("myModal").style.display = "none";
 }
 
-
-function lazar(){
-    // let x = document.getElementById("myForm");
-    // console.log(x.deviation.value);
-    // console.log(x.wind.checked);
-}
-
-function calculate_pres(){
-
-}
-
-function get_wind(data){
-    // let wind = document.createElement("tr")
-    // let wind1 = document.createElement("td")
-    // wind1.innerText = "Wind"
-    // wind.appendChild(wind1)
-    let wind = {}
-
-    if(data["ims"]){
-        wind["ims"] = data["ims"] 
-        
-
-    }
-    else{
-        console.log("error ims",data["ims"]);
-    }
-    
-
-}
-
-function get_temperatur(){
-
-}
-
-function get_humidity(){
-
-}
-
-function get_ims_data(data){
+function get_ims_data(data,wind,temperature,humidity){
     let ims = {}
+    if(!data["ims"]){
+        return ims;
+    }
+    //extract data
     data["ims"].forEach(element =>{
         if(element.name==="TD"){
-            ims["temperature"] = element.value
+            if(temperature){
+                ims["temperature"] = element.value
+            }
         }
         else if(element.name==="WS"){
-           ims["wind speed"] =  element.value    
+            if(wind){
+                ims["wind speed"] =  element.value    
+            }
         }
         else if(element.name==="WD"){
-            ims["wind direction"] = element.value
-
+            if(wind){
+                 ims["wind direction"] = element.value
+            }
         }
         else if(element.name==="RH"){
-            ims["humidity"] = element.value
-
-        }
-        
+            if(humidity){
+                ims["humidity"] = element.value
+            }
+        }   
     })
     return ims;
 }
 
-function get_openWeather_data(data){
+function get_openWeather_data(data,wind,temperature,humidity){
     let openWeather = {}
-    openWeather["wind speed"] = data["openWeather"]["wind"].speed
-    openWeather["wind direction"] = data["openWeather"]["deg"].deg
-
-    openWeather["humidity"] = data["openWeather"]["main"].humidity
-    openWeather["temperatur"] = data["openWeather"]["main"].temp
-
+    if(!data["openWeather"]){
+        return openWeather
+    }
+    if(wind){
+        openWeather["wind speed"] = data["openWeather"]["wind"].speed
+        openWeather["wind direction"] = data["openWeather"]["wind"].deg
+    }
+    if(temperature){
+        openWeather["temperature"] = data["openWeather"]["main"].temp
+    }
+    if(humidity){
+        openWeather["humidity"] = data["openWeather"]["main"].humidity
+    }
     return openWeather;
+}
 
+function calculate_deviation(dataBySite,dataRequire,dataTr){
+    let deviation = document.getElementById("deviation").value
+    if(dataRequire["wind"]){
+        let deviationTd = document.createElement("td")
+        dataTr["wind"].appendChild(deviationTd)
+        if(Object.keys(dataBySite["ims"]).length!==0 && Object.keys(dataBySite["openWeather"]).length!==0){
+            let windRes = (Math.abs(dataBySite["ims"]["wind speed"] - dataBySite["openWeather"]["wind speed"])/dataBySite["ims"]["wind speed"])*100; 
+            if(windRes>deviation){
+                deviationTd.innerHTML = "DEVIATION "+windRes.toFixed(2)+"%"
+                deviationTd.style.color = "red"
+            } 
+            else{
+                deviationTd.innerHTML = "OK"
+                deviationTd.style.color = "green"
+            }
+        }
+        else{
+            deviationTd.innerText = "N\\A"
+        }
+    }
+    if(dataRequire["temperature"]){
+        let deviationTd = document.createElement("td")
+        dataTr["temperature"].appendChild(deviationTd)
+        if(Object.keys(dataBySite["ims"]).length!==0 && Object.keys(dataBySite["openWeather"]).length!==0){
+            let temperatureRes = (Math.abs(dataBySite["ims"]["temperature"] - dataBySite["openWeather"]["temperature"])/dataBySite["ims"]["temperature"])*100;
+            if(temperatureRes>deviation){
+                deviationTd.innerHTML = "DEVIATION\n"+temperatureRes.toFixed(2)+"%"
+                deviationTd.style.color = "red"
+            } 
+            else{
+                deviationTd.innerHTML = "OK"
+                deviationTd.style.color = "green"
+            }
+        }
+        else{
+            deviationTd.innerText = "N\\A"
+        }
+    }
+    if(dataRequire["humidity"] ){
+        let deviationTd = document.createElement("td")
+        dataTr["humidity"].appendChild(deviationTd)
+        if(Object.keys(dataBySite["ims"]).length!==0 && Object.keys(dataBySite["openWeather"]).length!==0){
+            let humidityRes = (Math.abs(dataBySite["ims"]["humidity"] - dataBySite["openWeather"]["humidity"]))
+            if(humidityRes>deviation){
+                deviationTd.innerHTML = "DEVIATION "+humidityRes.toFixed(2)+"%"
+                deviationTd.style.color = "red"
+            } 
+            else{
+                deviationTd.innerHTML = "OK"
+                deviationTd.style.color = "green"
+            }
+        }
+        else{
+            deviationTd.innerText = "N\\A"
+        }
+    }
+}
 
+function add_data_from_weather_sites(dataBySite,dataRequire,dataTr){
+    Object.keys(dataBySite).forEach(function(k){
+        let td = document.createElement("td")
+        td.innerText = "website:\n"+k
+        dataTr["headLine"].appendChild(td)
+        if(dataRequire["wind"]){
+            let tempWind = document.createElement("td")
+            if(Object.keys(dataBySite[k]).length===0){
+                tempWind.innerText = "N\\A";
+            }
+            else{
+                tempWind.innerText = "speed:"+dataBySite[k]["wind speed"]+"m/sec"+", direction:"+dataBySite[k]["wind direction"]
+            }
+            
+            dataTr["wind"].appendChild(tempWind)
+        }
+        if(dataRequire["temperature"]){
+            let tempTemperature = document.createElement("td")
+            if(Object.keys(dataBySite[k]).length===0){
+                tempTemperature.innerText = "N\\A"
+            }
+            else{
+                tempTemperature.innerText = "DegC:"+dataBySite[k]["temperature"]
+            }
+            dataTr["temperature"].appendChild(tempTemperature)
+        }
+        if(dataRequire["humidity"]){
+            let tempHumidity = document.createElement("td")
+            if(Object.keys(dataBySite[k]).length===0){
+                tempHumidity.innerText = "N\\A"
+            }
+            else{
+                tempHumidity.innerText = dataBySite[k]["humidity"]+"%"
+
+            }
+            dataTr["humidity"].appendChild(tempHumidity)
+        }
+    }); 
+}
+
+function init_result_table(myTable,dataRequire,dataTr){
+
+    myTable.setAttribute("id","resultTable")
+    let emptyTd = document.createElement("td")
+    emptyTd.innerText = ""
+    dataTr["headLine"].appendChild(emptyTd)
+    
+    Object.keys(dataRequire).forEach((key)=>{
+        if(dataRequire[key]){
+            dataTr[key] = document.createElement("tr")
+            let firstCol = document.createElement("td")
+            firstCol.innerText = key
+            dataTr[key].appendChild(firstCol)
+        }
+    })
 }
 
 function show_whether_data(data){
     let myForm = document.getElementById("myForm");
-    let myTable = document.createElement("table");
-    myTable.setAttribute("id", "myTable");
+    let dataRequire = {}
+    let dataBySite = {}
+    let dataTr = {}
+    let myTable = document.createElement("table")
+    dataTr["headLine"] = document.createElement("tr")
 
-    let headline = document.createElement("tr")
-    let td = document.createElement("td")
-    headline.appendChild(td)
-    Object.keys(data).forEach(function(k){
-        td = document.createElement("td")
-        td.innerText = k
-        headline.appendChild(td)
-        console.log(k);
-    });
-    td = document.createElement("td")
-    td.innerText = "חריגה"
-    headline.appendChild(td)
-    myTable.appendChild(headline)
-    document.body.appendChild(myTable)
+    Array.from(myForm).forEach((formElement,index)=>{
+        if(formElement.type==="checkbox"){
+            dataRequire[formElement.name]=formElement.checked;
+        }
+    })
 
-    if(myForm.wind.checked){
-        let wind = get_wind(data)
+    init_result_table(myTable,dataRequire,dataTr)
+    // load relevant data from response data
+    dataBySite["ims"] = get_ims_data(data,dataRequire["wind"],dataRequire["temperature"],dataRequire["humidity"])
+    dataBySite["openWeather"] = get_openWeather_data(data,dataRequire["wind"],dataRequire["temperature"],dataRequire["humidity"])
 
-    }
-    if(myForm.humidity.checked){
-
-    }
-    if(myForm.temp.checked){
-        
-    }
-    
-    
-    
-   
-   
-    
-    
+    add_data_from_weather_sites(dataBySite,dataRequire,dataTr)
+    let deviationTd = document.createElement("td")
+    deviationTd.innerHTML = "deviation"
+    dataTr["headLine"].appendChild(deviationTd)
+    calculate_deviation(dataBySite,dataRequire,dataTr)
+    Object.values(dataTr).forEach((tr)=>{
+        myTable.appendChild(tr)
+    })
+    document.getElementById("myModal").appendChild(myTable)
+    document.getElementById("myModal").style.display = "block";
 
 }
-function get_whether(){
+
+
+
+function check_input(){
+    let myForm = document.getElementById("myForm")
+    let flag = false
+    Array.from(myForm).forEach((formElement,index)=>{
+        if(formElement.type==="checkbox"){
+           
+            if(formElement.checked){
+                flag = true || flag;
+            } 
+        }
+    })
+    return flag
+
+}
+ function get_whether(){
+
+    if(!check_input()){
+        alert("לא הוכנסו שום פרמטרים לבקשה, אנא שלח שנית")
+        return;
+    }
+
+
     fetch('http://localhost:3001/data', {   
         method: 'GET'
         }).then((response)=>{
@@ -147,82 +232,7 @@ function get_whether(){
         })
     }).catch(err=>{console.log("Unsuccses",err)})
 
-    // .then(data=>data.text()).then(text=> console.log(text))
-    // fetch('http://localhost:3000/data', {
-    //     method: 'GET',  
-    //     })
-    // .then(response => response.text()).then(data=>console.log(data))
 }
    
 
-    // weatherObj.temp[0] =  JSONObj.main.temp
-    // weatherObj.humidity[0] = JSONObj.main.humidity
-    // weatherObj.wind[0] = JSONObj.main.wind
-
-
-    // body.data[0].channels.forEach(element => {
-    //     if(element.name =='TD')
-    //       weatherObj.temp[1]=element.value
-    //       else if(element.name =='WS')
-    //       weatherObj.wind[1]=element.value
-    //       else if(element.name =='RH')
-    //       weatherObj.humidity[1]=element.value
-    //     });
-   
-
-
-//tr = line
-// function creat_result_table(weatherObj,temp,hum,wind){
-//     var myTable = document.getElementsById("myTable")
-//     if(temp){
-//         var t1 = document.createElement("tr")
-//         var t1_0 = document.createElement("th")
-//         t1_0.innerHTML = "temp"
-//         var t1_1 = document.createElement("th")
-//         t1_1.innerHTML = weatherObj.temp[0]
-//         var t1_2 = document.createElement("th")
-//         t1_2.innerHTML = weatherObj.temp[1]
-//         var t1_3 = document.createElement("th")
-//         t1_3.innerHTML = weatherObj.temp[2]
-//         t1.appendChild(t1_0)
-//         t1.appendChild(t1_1)
-//         t1.appendChild(t1_2)
-//         t1.appendChild(t1_3)
-//         myTable.appendChild(t1)
-//     }
-
-//     if(wind){
-//         var t1 = document.createElement("tr")
-//         var t1_0 = document.createElement("th")
-//         t1_0.innerHTML = "wind"
-//         var t1_1 = document.createElement("th")
-//         t1_1.innerHTML = weatherObj.wind[0]
-//         var t1_2 = document.createElement("th")
-//         t1_2.innerHTML = weatherObj.wind[1]
-//         var t1_3 = document.createElement("th")
-//         t1_3.innerHTML = weatherObj.wind[2]
-//         t1.appendChild(t1_0)
-//         t1.appendChild(t1_1)
-//         t1.appendChild(t1_2)
-//         t1.appendChild(t1_3)
-//         myTable.appendChild(t1)
-//     }
-
-//     if(hum){
-//         var t1 = document.createElement("tr")
-//         var t1_0 = document.createElement("th")
-//         t1_0.innerHTML = "temp"
-//         var t1_1 = document.createElement("th")
-//         t1_1.innerHTML = weatherObj.humidity[0]
-//         var t1_2 = document.createElement("th")
-//         t1_2.innerHTML = weatherObj.humidity[1]
-//         var t1_3 = document.createElement("th")
-//         t1_3.innerHTML = weatherObj.humidity[2]
-//         t1.appendChild(t1_0)
-//         t1.appendChild(t1_1)
-//         t1.appendChild(t1_2)
-//         t1.appendChild(t1_3)
-//         myTable.appendChild(t1)
-//     }
-//     myTable.style.display = "block"
-// }
+    
